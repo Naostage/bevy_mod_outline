@@ -156,7 +156,7 @@ fn setup(
 
 /// A toolbar pinned to the top-left corner.
 fn ui() -> impl SceneList {
-    bsn_list![(
+    bsn_list! {
         Node {
             position_type: PositionType::Absolute,
             top: px(8),
@@ -167,24 +167,26 @@ fn ui() -> impl SceneList {
         }
         TabGroup
         Children [
-            aa_menu(),
-            outline_msaa_menu(),
-            outline_method_menu(),
-            (Text("Speed") ThemedText),
-            (
-                @FeathersSlider {
-                    @min: 0.0,
-                    @max: 2.0,
-                    @value: 1.0,
-                }
-                Node { width: px(220) }
-                SliderStep(0.1)
-                SliderPrecision(1)
-                SpeedSlider
-                on(slider_self_update)
-            ),
+            @aa_menu()
+            --
+            @outline_msaa_menu()
+            --
+            @outline_method_menu()
+            --
+            Text("Speed") ThemedText
+            --
+            @FeathersSlider {
+                @min: 0.0,
+                @max: 2.0,
+            }
+            SliderValue(1.0)
+            Node { width: px(220) }
+            SliderStep(0.1)
+            SliderPrecision(1)
+            SpeedSlider
+            on(slider_self_update)
         ]
-    )]
+    }
 }
 
 /// A drop-down menu: a button captioned `caption` that opens a popup listing `items`.
@@ -192,10 +194,11 @@ fn menu(caption: impl SceneList + 'static, items: impl SceneList + 'static) -> i
     bsn! {
         @FeathersMenu
         Children [
-            (@FeathersMenuButton {
+            @FeathersMenuButton {
                 @caption: {Box::new(caption) as Box<dyn SceneList>}
-            }),
-            (@FeathersMenuPopup Children [ {Box::new(items) as Box<dyn SceneList>} ])
+            }
+            --
+            @FeathersMenuPopup Children [ {Box::new(items) as Box<dyn SceneList>} ]
         ]
     }
 }
@@ -203,17 +206,22 @@ fn menu(caption: impl SceneList + 'static, items: impl SceneList + 'static) -> i
 /// Menu for selecting the scene-wide anti-aliasing mode.
 fn aa_menu() -> impl Scene {
     menu(
-        bsn_list![
-            (Text("Anti-aliasing: ") ThemedText),
-            (Text("") ThemedText AaLabel),
-        ],
-        bsn_list![
-            menu_item(AAMode::None),
-            msaa_submenu(),
-            menu_item(AAMode::Fxaa),
-            menu_item(AAMode::Smaa),
-            menu_item(AAMode::Taa),
-        ],
+        bsn_list! {
+            Text("Anti-aliasing: ") ThemedText
+            --
+            Text("") ThemedText AaLabel
+        },
+        bsn_list! {
+            @menu_item(AAMode::None)
+            --
+            @msaa_submenu()
+            --
+            @menu_item(AAMode::Fxaa)
+            --
+            @menu_item(AAMode::Smaa)
+            --
+            @menu_item(AAMode::Taa)
+        },
     )
 }
 
@@ -222,32 +230,33 @@ fn msaa_submenu() -> impl Scene {
     bsn! {
         @FeathersMenu
         Children [
-            (@FeathersMenuButton {
+            @FeathersMenuButton {
                 @caption: {bsn! { Text("MSAA") ThemedText }}
-            }),
-            (
-                @FeathersMenuPopup
-                Popover {
-                    positions: vec![
-                        PopoverPlacement {
-                            side: PopoverSide::Right,
-                            align: PopoverAlign::Start,
-                            gap: 2.0,
-                        },
-                        PopoverPlacement {
-                            side: PopoverSide::Left,
-                            align: PopoverAlign::Start,
-                            gap: 2.0,
-                        },
-                    ],
-                    window_margin: 10.0,
-                }
-                Children [
-                    (menu_item(AAMode::Msaa(Msaa::Sample2))),
-                    (menu_item(AAMode::Msaa(Msaa::Sample4))),
-                    (menu_item(AAMode::Msaa(Msaa::Sample8))),
-                ]
-            )
+            }
+            --
+            @FeathersMenuPopup
+            Popover {
+                positions: vec![
+                    PopoverPlacement {
+                        side: PopoverSide::Right,
+                        align: PopoverAlign::Start,
+                        gap: 2.0,
+                    },
+                    PopoverPlacement {
+                        side: PopoverSide::Left,
+                        align: PopoverAlign::Start,
+                        gap: 2.0,
+                    },
+                ],
+                window_margin: 10.0,
+            }
+            Children [
+                @menu_item(AAMode::Msaa(Msaa::Sample2))
+                --
+                @menu_item(AAMode::Msaa(Msaa::Sample4))
+                --
+                @menu_item(AAMode::Msaa(Msaa::Sample8))
+            ]
         ]
     }
 }
@@ -255,31 +264,38 @@ fn msaa_submenu() -> impl Scene {
 /// Menu for selecting the outline MSAA override.
 fn outline_msaa_menu() -> impl Scene {
     menu(
-        bsn_list![
-            (Text("Outline MSAA: ") ThemedText),
-            (Text("") ThemedText OutlineMsaaLabel),
-        ],
-        bsn_list![
-            menu_item(OutlineAAMode::Auto),
-            menu_item(OutlineAAMode::Off),
-            menu_item(OutlineAAMode::Sample2),
-            menu_item(OutlineAAMode::Sample4),
-            menu_item(OutlineAAMode::Sample8),
-        ],
+        bsn_list! {
+            Text("Outline MSAA: ") ThemedText
+            --
+            Text("") ThemedText OutlineMsaaLabel
+        },
+        bsn_list! {
+            @menu_item(OutlineAAMode::Auto)
+            --
+            @menu_item(OutlineAAMode::Off)
+            --
+            @menu_item(OutlineAAMode::Sample2)
+            --
+            @menu_item(OutlineAAMode::Sample4)
+            --
+            @menu_item(OutlineAAMode::Sample8)
+        },
     )
 }
 
 /// Menu for selecting the outline rendering method.
 fn outline_method_menu() -> impl Scene {
     menu(
-        bsn_list![
-            (Text("Outline method: ") ThemedText),
-            (Text("") ThemedText OutlineKindLabel),
-        ],
-        bsn_list![
-            menu_item(OutlineKind::Extrude),
-            menu_item(OutlineKind::Flood),
-        ],
+        bsn_list! {
+            Text("Outline method: ") ThemedText
+            --
+            Text("") ThemedText OutlineKindLabel
+        },
+        bsn_list! {
+            @menu_item(OutlineKind::Extrude)
+            --
+            @menu_item(OutlineKind::Flood)
+        },
     )
 }
 
