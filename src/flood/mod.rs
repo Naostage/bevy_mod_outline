@@ -172,20 +172,29 @@ impl Plugin for FloodPlugin {
         load_internal_asset!(
             app,
             JUMP_FLOOD_SHADER_HANDLE,
-            "jump_flood.wgsl",
-            Shader::from_wgsl
+            "jump_flood.wesl",
+            |source, _| {
+                Shader::from_wesl(source, "embedded://bevy_mod_outline/flood/jump_flood.wesl")
+            }
         );
         load_internal_asset!(
             app,
             COMPOSE_OUTPUT_SHADER_HANDLE,
-            "compose_output.wgsl",
-            Shader::from_wgsl
+            "compose_output.wesl",
+            |source, _| {
+                Shader::from_wesl(
+                    source,
+                    "embedded://bevy_mod_outline/flood/compose_output.wesl",
+                )
+            }
         );
         load_internal_asset!(
             app,
             SOBEL_INIT_SHADER_HANDLE,
-            "sobel_init.wgsl",
-            Shader::from_wgsl
+            "sobel_init.wesl",
+            |source, _| {
+                Shader::from_wesl(source, "embedded://bevy_mod_outline/flood/sobel_init.wesl")
+            }
         );
 
         app.add_plugins(SortedRenderPhasePlugin::<FloodOutline, OutlinePipeline>::new(

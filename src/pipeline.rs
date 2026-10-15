@@ -129,20 +129,15 @@ impl SpecializedMeshPipeline for OutlinePipeline {
             vertex_defs.push(val.clone());
             fragment_defs.push(val);
 
-            let channel_def = ShaderDefVal::UInt(
-                "ALPHA_MASK_CHANNEL".to_string(),
-                key.alpha_mask_channel_int(),
-            );
+            let channel_def =
+                ShaderDefVal::UInt("ALPHA_MASK_CHANNEL".into(), key.alpha_mask_channel_int());
             fragment_defs.push(channel_def);
 
             buffer_attrs.push(Mesh::ATTRIBUTE_UV_0.at_shader_location(2));
         }
 
         if let Some(sz) = self.instance_batch_size {
-            vertex_defs.push(ShaderDefVal::Int(
-                "INSTANCE_BATCH_SIZE".to_string(),
-                sz as i32,
-            ));
+            vertex_defs.push(ShaderDefVal::Int("INSTANCE_BATCH_SIZE".into(), sz as i32));
         }
 
         if key.msaa() != Msaa::Off {
@@ -240,12 +235,14 @@ impl SpecializedMeshPipeline for OutlinePipeline {
                 entry_point: None,
                 shader_defs: vertex_defs,
                 buffers,
+                ..default()
             },
             fragment: Some(FragmentState {
                 shader: FRAGMENT_SHADER_HANDLE,
                 shader_defs: fragment_defs,
                 entry_point: None,
                 targets,
+                ..default()
             }),
             layout: bind_layouts,
             primitive: PrimitiveState {

@@ -484,19 +484,17 @@ impl OutlinePlugin {
 
 impl Plugin for OutlinePlugin {
     fn build(&self, app: &mut App) {
-        load_internal_asset!(app, COMMON_SHADER_HANDLE, "common.wgsl", Shader::from_wgsl);
-        load_internal_asset!(
-            app,
-            OUTLINE_SHADER_HANDLE,
-            "outline.wgsl",
-            Shader::from_wgsl
-        );
-        load_internal_asset!(
-            app,
-            FRAGMENT_SHADER_HANDLE,
-            "fragment.wgsl",
-            Shader::from_wgsl
-        );
+        // The embedded:// path sets each shader's WESL module path, so
+        // `package::common` resolves to bevy_mod_outline::common.
+        load_internal_asset!(app, COMMON_SHADER_HANDLE, "common.wesl", |source, _| {
+            Shader::from_wesl(source, "embedded://bevy_mod_outline/common.wesl")
+        });
+        load_internal_asset!(app, OUTLINE_SHADER_HANDLE, "outline.wesl", |source, _| {
+            Shader::from_wesl(source, "embedded://bevy_mod_outline/outline.wesl")
+        });
+        load_internal_asset!(app, FRAGMENT_SHADER_HANDLE, "fragment.wesl", |source, _| {
+            Shader::from_wesl(source, "embedded://bevy_mod_outline/fragment.wesl")
+        });
 
         app.add_plugins((
             ExtractComponentPlugin::<ResolvedOutlineMsaa>::default(),

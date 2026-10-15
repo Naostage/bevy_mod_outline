@@ -1,3 +1,4 @@
+use bevy::utils::default;
 use bevy::{
     core_pipeline::FullscreenShader,
     prelude::*,
@@ -52,6 +53,7 @@ pub(crate) fn init_sobel_init_pipeline(
                 blend: None,
                 write_mask: ColorWrites::ALL,
             })],
+            ..default()
         }),
         primitive: PrimitiveState::default(),
         depth_stencil: None,

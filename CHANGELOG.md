@@ -1,5 +1,11 @@
 # Changelog
 
+## bevy_mod_outline 0.14.0 (unreleased)
+
+### Changed
+- Updated Bevy dependency to 0.20.
+- Ported shaders to WESL.
+
 ## bevy_mod_outline 0.13.0 (2026-07-09)
 
 ### Added

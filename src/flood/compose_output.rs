@@ -1,4 +1,5 @@
 use bevy::shader::ShaderDefVal;
+use bevy::utils::default;
 use bevy::{
     platform::collections::HashMap,
     prelude::*,
@@ -14,7 +15,7 @@ use bevy::{
         renderer::{RenderContext, RenderDevice, RenderQueue},
         sync_world::MainEntity,
         texture::CachedTexture,
-        view::{ExtractedView, ViewDepthTexture, ViewTarget},
+        view::{ExtractedView, ViewDepthStencilTexture, ViewTarget},
     },
 };
 use wgpu_types::{
@@ -127,6 +128,7 @@ impl ComposeOutputPipeline {
                     shader_defs: shader_defs.clone(),
                     entry_point: None,
                     buffers: vec![],
+                    ..default()
                 },
                 fragment: Some(FragmentState {
                     shader: COMPOSE_OUTPUT_SHADER_HANDLE,
@@ -137,6 +139,7 @@ impl ComposeOutputPipeline {
                         blend: Some(BlendState::ALPHA_BLENDING),
                         write_mask: ColorWrites::ALL,
                     })],
+                    ..default()
                 }),
                 primitive: PrimitiveState::default(),
                 depth_stencil: Some(DepthStencilState {
@@ -189,7 +192,7 @@ pub(crate) struct ComposeOutputPass<'w> {
     outline_view_uniforms: &'w ComponentUniforms<OutlineViewUniform>,
     compose_output_uniforms: &'w ComposeOutputUniforms,
     view_target: &'w ViewTarget,
-    view_depth: &'w ViewDepthTexture,
+    view_depth: &'w ViewDepthStencilTexture,
     outline_textures: Option<&'w OutlineViewTextures>,
 }
 
@@ -198,7 +201,7 @@ impl<'w> ComposeOutputPass<'w> {
         world: &'w World,
         compose_output_view: &ComposeOutputView,
         view_target: &'w ViewTarget,
-        view_depth: &'w ViewDepthTexture,
+        view_depth: &'w ViewDepthStencilTexture,
         outline_textures: Option<&'w OutlineViewTextures>,
     ) -> Option<Self> {
         let pipeline = world.resource::<ComposeOutputPipeline>();
